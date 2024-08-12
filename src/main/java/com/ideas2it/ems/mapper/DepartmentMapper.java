@@ -9,6 +9,9 @@ import com.ideas2it.ems.model.Department;
  *     Converts the json objects according to application operations.
  *     e.g., (dto object -> json object, json object -> dto object)
  * </p>
+ *
+ * @author Saiprasath
+ * @version 1.5
  */
 public class DepartmentMapper {
     public static CreationDepartmentDto convertToCreateDto(Department department) {

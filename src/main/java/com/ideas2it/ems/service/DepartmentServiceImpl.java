@@ -1,12 +1,14 @@
 package com.ideas2it.ems.service;
 
+import java.util.List;
+import java.util.Set;
+
 import com.ideas2it.ems.model.Department;
+import com.ideas2it.ems.model.Employee;
 import com.ideas2it.ems.repository.DepartmentRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * <p>
@@ -43,5 +45,11 @@ public class DepartmentServiceImpl implements DepartmentService {
         Department department = departmentRepository.findByDepartmentIdAndIsRemoved(departmentId, false);
         department.setIsRemoved(true);
         return departmentRepository.save(department);
+    }
+
+    @Override
+    public Set<Employee> getEmployeesOfDepartments(Long departmentId) {
+        Department department = getDepartment(departmentId);
+        return department.getEmployees();
     }
 }

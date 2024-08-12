@@ -1,12 +1,17 @@
 package com.ideas2it.ems.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+
+import java.util.Set;
 
 /**
  * <p>
@@ -41,6 +46,10 @@ public class Project {
     @Column(name = "is_deleted")
     private boolean isRemoved;
 
+    @ManyToMany(mappedBy = "project",
+            fetch = FetchType.EAGER)
+    private Set<Employee> employees;
+
     public Project() {}
 
     public Project(String projectName) {this.projectName =projectName;}
@@ -59,6 +68,14 @@ public class Project {
 
     public void setProjectName(String projectName) {
         this.projectName = projectName;
+    }
+
+    public Set<Employee> getEmployees() {
+        return employees;
+    }
+
+    public void SetEmployees(Set<Employee> employees) {
+        this.employees = employees;
     }
 
     public boolean getIsRemoved() {

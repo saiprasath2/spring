@@ -9,11 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DisplaySalaryAccountDto {
+public class ProjectAssigningDto {
     private Long id;
 
-    private String AccountNumber;
-
-    private String IfscCode;
+    private Long projecId;
 }
-

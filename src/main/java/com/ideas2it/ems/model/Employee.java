@@ -1,5 +1,6 @@
 package com.ideas2it.ems.model;
 
+import com.ideas2it.ems.util.Util;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,9 +17,11 @@ import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.HashSet;
+import java.time.Period;
 import java.util.Set;
 
 /**
@@ -32,6 +35,8 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "employees")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Employee {
 
     @Id
@@ -57,65 +62,109 @@ public class Employee {
     @Column(name = "contact_number", nullable = false, length = 10)
     private String contactNumber;
 
-    @OneToOne(cascade = CascadeType.ALL,mappedBy = "")
+    @Column(name = "is_deleted")
+    private boolean isRemoved;
+
+    @OneToOne(targetEntity = SalaryAccount.class,
+              cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "account_id")
     private SalaryAccount salaryAccount;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(name = "grade_id", nullable = false)
-    private Grade grade;
+    @ManyToOne
+    @JoinColumn(name = "department_id")
+    private Department department;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
-    @JoinTable(name = "student_sports_activity",
-            joinColumns = @JoinColumn(name = "student_id"),
-            inverseJoinColumns = @JoinColumn(name = "sport_id"))
-    private Set<SportsActivity> sportsActivities = new HashSet<>();
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "association_employee_project",
+            joinColumns = {@JoinColumn(name = "employee_id")},
+            inverseJoinColumns = {@JoinColumn(name = "project_id")}
+    )
+    private Set<Project> project;
 
-    public void setName(String name) {
-        this.name = name;
+    public Long getEmployeeId() {
+        return employeeId;
     }
 
-    public String getName() {
-        return name;
+    public void setEmployeeId(Long employeeId) {
+        this.employeeId = employeeId;
     }
 
-    public void setDob(LocalDate  dob) {
-        this.dob = dob;
+    public String getEmployeeName() {
+        return employeeName;
     }
 
-    public LocalDate getDob() {
-        return dob;
+    public void setEmployeeName(String employeeName) {
+        this.employeeName = employeeName;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getContactNumber() {
+        return contactNumber;
     }
 
-    public String getId() {
-        return id;
+    public void setContactNumber(String contactNumber) {
+        this.contactNumber = contactNumber;
     }
 
-    public Address getAddress() {
-        return address;
+    public Department getDepartment() {
+        return department;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
+    public void setDepartment(Department department) {
+        this.department = department;
     }
 
-    public Grade getGrade() {
-        return grade;
+    public LocalDate getEmployeeDob() {
+        return employeeDob;
     }
 
-    public void setGrade(Grade grade) {
-        this.grade = grade;
+    public void setEmployeeDob(LocalDate employeeDob) {
+        this.employeeDob = employeeDob;
     }
 
-    public Set<SportsActivity> getSportsActivities() {
-        return sportsActivities != null ? sportsActivities : new HashSet<>();
+    public boolean getIsRemoved() {
+        return isRemoved;
     }
 
-    public void setSportsActivities(Set<SportsActivity> sportsActivities) {
-        this.sportsActivities = sportsActivities;
+    public void setIsRemoved(boolean isRemoved) {
+        this.isRemoved = isRemoved;
+    }
+    /**
+     * Returns set of projects assigned for an employee to getAllprojects.
+     *
+     * @return Set<> value to get project list.
+     */
+    public Set<Project> getProject() {
+        return project;
     }
 
+    public void setProject(Set<Project> project) {
+        this.project = project;
+    }
+
+    public String getAllProjects() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Project project : getProject()) {
+            stringBuilder.append(project.getProjectName() + ",");
+        }
+        return stringBuilder.toString();
+    }
+
+    public SalaryAccount getSalaryAccount() {
+        return salaryAccount;
+    }
+
+    public void setSalaryAccount(SalaryAccount salaryAccount) {
+        this.salaryAccount = salaryAccount;
+    }
+
+    /**
+     * Calculates the current age of the employee from
+     * dateOfBirth value passed.
+     *
+     * @return String value of current age of the employee.
+     */
+    public String getAge() {
+            return Util.calculateAge(getEmployeeDob());
+    }
 }

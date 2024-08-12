@@ -14,11 +14,6 @@ public class SalaryAccountServiceImpl implements SalaryAccountService {
     SalaryAccountRepository salaryAccountRepository;
 
     @Override
-    public void addOrUpdateAccount(SalaryAccount salaryAccount) {
-       salaryAccountRepository.save(salaryAccount);
-    }
-
-    @Override
     public List<SalaryAccount> getAccounts() {
         return salaryAccountRepository.findAll();
     }

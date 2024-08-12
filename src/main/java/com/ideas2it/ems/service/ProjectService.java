@@ -2,6 +2,8 @@ package com.ideas2it.ems.service;
 
 import java.util.List;
 
+import com.ideas2it.ems.dto.DisplayEmployeeDto;
+import com.ideas2it.ems.dto.ProjectDto;
 import com.ideas2it.ems.model.Project;
 
 import org.springframework.stereotype.Service;
@@ -23,18 +25,18 @@ public interface ProjectService {
      * </p>
      *
      * @param project  String value to set Project Name.
-     * @return Project value to indicate insertion status.
+     * @return ProjectDto value to indicate insertion status.
      */
-    public Project addOrUpdateProject(Project project);
+    ProjectDto addOrUpdateProject(Project project);
 
     /**
      * <p>
      * Calls retrieveEmployeeProjects to get the Project list.
      * </p>
      *
-     * @return List<> value to display Project list.
+     * @return List<ProjectDto> value to display Project list.
      */
-    public List<Project> getProjects();
+    List<ProjectDto> getProjects();
 
     /**
      * <p>
@@ -42,16 +44,26 @@ public interface ProjectService {
      * </p>
      *
      * @param projectId  Long value to display the Project.
-     * @return Project value to display the Project.
+     * @return ProjectDto value to display the Project.
      */
-    public Project getProject(Long projectId);
+    ProjectDto getProject(Long projectId);
 
     /**
      * <p>
      *     Removes the Project from user view by changing boolean value.
      * </p>
      * @param projectId to remove Project.
-     * @return Project value to acknowledge.
+     * @return ProjectDto value to acknowledge.
      */
-    public Project deleteProject(Long projectId);
+    ProjectDto deleteProject(Long projectId);
+
+    /**
+     * <p>
+     * Returns employee record under the specific project.
+     * </p>
+     *
+     * @param projectId int value to get the project.
+     * @return List<DisplayEmployeeDto> value to list the employee.
+     */
+    List<DisplayEmployeeDto> getEmployeesOfProjects(Long projectId);
 }

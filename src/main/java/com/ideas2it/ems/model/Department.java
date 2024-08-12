@@ -1,12 +1,18 @@
 package com.ideas2it.ems.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+
+import java.util.Set;
 
 /**
  * <p> 
@@ -20,6 +26,7 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name = "departments")
+@AllArgsConstructor
 public class Department {
     
     @Id
@@ -41,9 +48,14 @@ public class Department {
     @Column(name = "is_deleted")
     private boolean isRemoved;
 
+    @OneToMany(mappedBy = "department",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER)
+    public Set<Employee> employees;
+
     public Department() {}
 
-    public Department(String departmentName) {this.departmentName = departmentName;}
+    public Department(Long departmentId) {this.departmentId = departmentId;}
 
     public Long getDepartmentId() {
         return departmentId;
@@ -59,6 +71,14 @@ public class Department {
 
     public void setDepartmentName(String departmentName) {
         this.departmentName = departmentName; 
+    }
+
+    public Set<Employee> getEmployees() {
+        return employees;
+    }
+
+    public void SetEmployees(Set<Employee> employees) {
+        this.employees = employees;
     }
 
     public boolean getIsRemoved() {

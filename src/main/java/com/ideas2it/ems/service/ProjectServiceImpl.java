@@ -1,12 +1,16 @@
 package com.ideas2it.ems.service;
 
+import java.util.List;
+
+import com.ideas2it.ems.dto.DisplayEmployeeDto;
+import com.ideas2it.ems.dto.ProjectDto;
+import com.ideas2it.ems.mapper.EmployeeMapper;
+import com.ideas2it.ems.mapper.ProjectMapper;
 import com.ideas2it.ems.model.Project;
 import com.ideas2it.ems.repository.ProjectRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * <p>
@@ -30,18 +34,25 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<Project> getProjects() {
-        return projectRepository.getAllNotDeletedProjects();
+        return projectRepository.findByIsRemovedFalse();
     }
 
     @Override
-    public Project getProject(Long projectId) {
-        return projectRepository.findByProjectIdAndIsRemoved(projectId, false);
+    public ProjectDto getProject(Long projectId) {
+        return ProjectMapper.convertToDto(projectRepository.findByProjectIdAndIsRemoved(projectId, false));
     }
 
     @Override
-    public Project deleteProject(Long projectId) {
+    public ProjectDto deleteProject(Long projectId) {
         Project Project = projectRepository.findByProjectIdAndIsRemoved(projectId, false);
         Project.setIsRemoved(true);
-        return projectRepository.save(Project);
+        return ProjectMapper.convertToDto(projectRepository.save(Project));
+    }
+
+    @Override
+    public List<DisplayEmployeeDto> getEmployeesOfProjects(Long projectId) {
+        Project project = projectRepository.findByProjectIdAndIsRemoved(projectId, false);
+        return project.getEmployees().stream()
+                        .map(EmployeeMapper::convertToDisplayableDto).toList();
     }
 }

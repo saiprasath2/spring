@@ -3,13 +3,16 @@ package com.ideas2it.ems.controller;
 import java.util.List;
 
 import com.ideas2it.ems.dto.CreationDepartmentDto;
+import com.ideas2it.ems.dto.DisplayableEmployeeDto;
 import com.ideas2it.ems.dto.TransactionDepartmentDto;
 import com.ideas2it.ems.mapper.DepartmentMapper;
-import com.ideas2it.ems.service.DepartmentService;
+import com.ideas2it.ems.mapper.EmployeeMapper;
 import com.ideas2it.ems.model.Department;
-import org.springframework.http.HttpStatus;
+import com.ideas2it.ems.service.DepartmentService;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
  * </p>
  *
  * @author Saiprasath
- * @version 1.4
+ * @version 1.5
  */
 @RestController
 @RequestMapping("departments")
@@ -125,5 +128,19 @@ public class DepartmentController {
         Department resultDepartment = departmentService.deleteDepartment(departmentId);
         logger.info(resultDepartment.getDepartmentName() + " deleted successfully");
         return new ResponseEntity<>(DepartmentMapper.convertToCreateDto(resultDepartment), HttpStatus.ACCEPTED);
+    }
+
+    /**
+     * <p>
+     *     Passes id of department to retrieve its related employees.
+     * </p>
+     * @param departmentId
+     * @return Employee values for visual.
+     */
+    @GetMapping("/{sportId}/employees")
+    public ResponseEntity<List<DisplayableEmployeeDto>> getEmployeesByDepartmentId(@PathVariable Long departmentId) {
+        List<DisplayableEmployeeDto> employeeDtos = departmentService.getEmployeesOfDepartments(departmentId).stream()
+                .map(EmployeeMapper::convertToDisplayableDto).toList();
+        return new ResponseEntity<>(employeeDtos, HttpStatus.OK);
     }
 }

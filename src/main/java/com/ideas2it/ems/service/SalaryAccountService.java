@@ -17,14 +17,6 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public interface SalaryAccountService {
-    /**
-     * <p>
-     * Passes account details to insertAccount to add or update.
-     * </p>
-     *
-     * @param salaryAccount SalaryAccount value to add account details.
-     */
-    void addOrUpdateAccount(SalaryAccount salaryAccount);
 
     /**
      * <p>

@@ -1,8 +1,10 @@
 package com.ideas2it.ems.service;
 
 import java.util.List;
+import java.util.Set;
 
 import com.ideas2it.ems.model.Department;
+import com.ideas2it.ems.model.Employee;
 
 import org.springframework.stereotype.Service;
 
@@ -12,7 +14,7 @@ import org.springframework.stereotype.Service;
  * </p>
  *
  * @author   Saiprasath 
- * @version  1.4
+ * @version  1.5
  */
 @Service
 public interface DepartmentService {
@@ -24,8 +26,8 @@ public interface DepartmentService {
      *
      * @param department  String value to set department Name.
      * @return Department value to indicate insertion status.
-     */    
-    public Department addOrUpdateDepartment(Department department);
+     */
+    Department addOrUpdateDepartment(Department department);
 
     /**
      * <p>
@@ -34,7 +36,7 @@ public interface DepartmentService {
      *
      * @return List<> value to display department list.
      */
-    public List<Department> getDepartments();
+    List<Department> getDepartments();
 
     /**
      * <p>
@@ -44,7 +46,7 @@ public interface DepartmentService {
      * @param departmentId  Long value to display the department.
      * @return Department value to display the department.
      */
-    public Department getDepartment(Long departmentId);
+    Department getDepartment(Long departmentId);
 
     /**
      * <p>
@@ -53,5 +55,15 @@ public interface DepartmentService {
      * @param departmentId to remove department.
      * @return Department value to acknowledge
      */
-    public Department deleteDepartment(Long departmentId);
+    Department deleteDepartment(Long departmentId);
+
+    /**
+     * <p>
+     * Returns employee record under the specific departmentt.
+     * </p>
+     *
+     * @param departmentId int value to get the project.
+     * @return Set<> value to list the employee.
+     */
+    Set<Employee> getEmployeesOfDepartments(Long departmentId);
 }
