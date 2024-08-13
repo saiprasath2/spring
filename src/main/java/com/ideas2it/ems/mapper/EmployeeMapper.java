@@ -19,6 +19,7 @@ import com.ideas2it.ems.model.SalaryAccount;
  * @version 1.5
  */
 public class EmployeeMapper {
+
     /**
      * <p>
      *     Converts the entity to displayable dto format.

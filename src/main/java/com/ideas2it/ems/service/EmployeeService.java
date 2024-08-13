@@ -2,15 +2,12 @@ package com.ideas2it.ems.service;
 
 import java.util.List;
 
-import com.ideas2it.ems.dto.EmployeeUpdationDto;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.ideas2it.ems.dto.DisplayEmployeeDto;
 import com.ideas2it.ems.dto.EmployeeCreationDto;
-import com.ideas2it.ems.model.Employee;
-import com.ideas2it.ems.model.Project;
-import org.springframework.web.bind.annotation.RequestBody;
+import com.ideas2it.ems.dto.EmployeeUpdationDto;
+import com.ideas2it.ems.dto.ProjectDto;
 
 /**
  * <p>
@@ -28,17 +25,17 @@ public interface EmployeeService {
      * passes the value for insertion into the collection.
      * </p>
      *
-     * @param employeeDto {@link EmployeeCreationDto}  value to set Employee Name.
+     * @param employeeDto - {@link EmployeeCreationDto} value to set Employee Name.
      * @return DisplayEmployeeDto value to indicate insertion status.
      */
-    DisplayEmployeeDto addOrUpdateEmployee(EmployeeCreationDto employeeDto);
+    DisplayEmployeeDto addEmployee(EmployeeCreationDto employeeDto);
 
     /**
      * <p>
      * Calls retrieveEmployeeEmployees to get the Employee list.
      * </p>
      *
-     * @return List<> value to display Employee list.
+     * @return List<>DisplayEmployeeDto value to display Employee list.
      */
     List<DisplayEmployeeDto> getEmployees();
 
@@ -57,14 +54,14 @@ public interface EmployeeService {
      *     Removes the Employee from user view by changing boolean value.
      * </p>
      *
-     * @param employeeId to remove Employee.
+     * @param employeeId -Long to remove Employee.
      * @return DisplayEmployeeDto value to acknowledge
      */
     DisplayEmployeeDto deleteEmployee(Long employeeId);
 
     /**
      *
-     * @param employeeDto {@link EmployeeUpdationDto} - to update the employee
+     * @param employeeDto - {@link EmployeeUpdationDto} value to update the employee
      * @return DisplayEmployeeDto for acknowledgement.
      */
     DisplayEmployeeDto updateEmployee(EmployeeUpdationDto employeeDto);
@@ -73,9 +70,9 @@ public interface EmployeeService {
      * <p>
      *     Assigns given project to the employee.
      * </p>
-     * @param project - to assign it to the employee.
-     * @param employee - to assign employee with a project.
-     * @return Employee for assigning acknowledgement.
+     * @param projectDto- {@link ProjectDto} to assign it to the employee.
+     * @param employeeId - Long to assign employee with a project.
+     * @return DisplayEmployeeDto for assigning acknowledgement.
      */
-    Employee assignProjectToEmployee(Project project, Employee employee);
+    DisplayEmployeeDto assignProjectToEmployee(Long employeeId, ProjectDto projectDto);
 }

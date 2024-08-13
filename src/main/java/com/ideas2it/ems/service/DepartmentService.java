@@ -1,12 +1,13 @@
 package com.ideas2it.ems.service;
 
 import java.util.List;
-import java.util.Set;
 
-import com.ideas2it.ems.model.Department;
-import com.ideas2it.ems.model.Employee;
-
+import com.ideas2it.ems.dto.CreationDepartmentDto;
 import org.springframework.stereotype.Service;
+
+import com.ideas2it.ems.dto.DisplayEmployeeDto;
+import com.ideas2it.ems.dto.TransactionDepartmentDto;
+import com.ideas2it.ems.model.Department;
 
 /** 
  * <p>
@@ -21,49 +22,58 @@ public interface DepartmentService {
 
     /**
      * <p>
-     * passes the value for insertion into the collection.
+     *    passes the value for insertion into the collection.
      * </p>
      *
-     * @param department  String value to set department Name.
-     * @return Department value to indicate insertion status.
+     * @param departmentDto {@link CreationDepartmentDto}  String value to set department Name.
+     * @return TransactionDepartmentDto value to indicate insertion status.
      */
-    Department addOrUpdateDepartment(Department department);
+    TransactionDepartmentDto addDepartment(CreationDepartmentDto departmentDto);
 
     /**
      * <p>
-     * Calls retrieveEmployeeDepartments to get the department list.
+     *    Retrieves department records available.
      * </p>
      *
-     * @return List<> value to display department list.
+     * @return List<TransactionDepartmentDto> value to display department list.
      */
-    List<Department> getDepartments();
+    List<TransactionDepartmentDto> getDepartments();
 
     /**
      * <p>
-     * Calls the getDepartment to fetch the department and returns the department.
+     *    Fetches the department and returns the department.
      * </p>
      *
-     * @param departmentId  Long value to display the department.
-     * @return Department value to display the department.
+     * @param departmentId - Long value to display the department.
+     * @return TransactionDepartmentDto value to display the department.
      */
-    Department getDepartment(Long departmentId);
+    TransactionDepartmentDto getDepartment(Long departmentId);
 
     /**
      * <p>
-     *     Removes the department from user view by changing boolean value.
+     *    Removes the department from user view by changing boolean value.
      * </p>
-     * @param departmentId to remove department.
-     * @return Department value to acknowledge
+     *
+     * @param departmentId - Long value to remove department.
      */
-    Department deleteDepartment(Long departmentId);
+    void deleteDepartment(Long departmentId);
 
     /**
      * <p>
-     * Returns employee record under the specific departmentt.
+     *    Updates the department name.
      * </p>
      *
-     * @param departmentId int value to get the project.
-     * @return Set<> value to list the employee.
+     * @param departmentDto - {@link TransactionDepartmentDto} value to update department.
+     * @return TransactionDepartmentDto to acknowledge.
      */
-    Set<Employee> getEmployeesOfDepartments(Long departmentId);
+    TransactionDepartmentDto updateDepartment(TransactionDepartmentDto departmentDto);
+    /**
+     * <p>
+     *    Returns employee record under the specific department.
+     * </p>
+     *
+     * @param departmentId - Long value to get the project.
+     * @return List<DisplayEmployeeDto> value to list the employee.
+     */
+    List<DisplayEmployeeDto> getEmployeesOfDepartments(Long departmentId);
 }

@@ -28,13 +28,16 @@ public class ProjectServiceImpl implements ProjectService {
     ProjectRepository projectRepository;
 
     @Override
-    public Project addOrUpdateProject(Project Project) {
-        return projectRepository.save(Project);
+    public ProjectDto addOrUpdateProject(ProjectDto projectDto) {
+        Project project = ProjectMapper.convertToEntity(projectDto);
+        Project resultProject = projectRepository.save(project);
+        return ProjectMapper.convertToDto(resultProject);
     }
 
     @Override
-    public List<Project> getProjects() {
-        return projectRepository.findByIsRemovedFalse();
+    public List<ProjectDto> getProjects() {
+        return projectRepository.findByIsRemovedFalse().stream()
+                .map(ProjectMapper::convertToDto).toList();
     }
 
     @Override
@@ -47,6 +50,14 @@ public class ProjectServiceImpl implements ProjectService {
         Project Project = projectRepository.findByProjectIdAndIsRemoved(projectId, false);
         Project.setIsRemoved(true);
         return ProjectMapper.convertToDto(projectRepository.save(Project));
+    }
+
+    @Override
+    public ProjectDto updateProject(ProjectDto projectDto) {
+        Project project = ProjectMapper.convertToEntity(projectDto);
+        project.setProjectName(projectDto.getName());
+        Project resultProject = projectRepository.save(project);
+        return ProjectMapper.convertToDto(resultProject);
     }
 
     @Override

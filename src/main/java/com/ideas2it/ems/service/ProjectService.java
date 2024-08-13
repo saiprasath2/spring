@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.ideas2it.ems.dto.DisplayEmployeeDto;
 import com.ideas2it.ems.dto.ProjectDto;
-import com.ideas2it.ems.model.Project;
 
 import org.springframework.stereotype.Service;
 
@@ -21,17 +20,17 @@ public interface ProjectService {
 
     /**
      * <p>
-     * passes the value for insertion into the collection.
+     *     passes the value for insertion into the collection.
      * </p>
      *
-     * @param project  String value to set Project Name.
+     * @param projectDto - {@link ProjectDto} value to set Project Name.
      * @return ProjectDto value to indicate insertion status.
      */
-    ProjectDto addOrUpdateProject(Project project);
+    ProjectDto addOrUpdateProject(ProjectDto projectDto);
 
     /**
      * <p>
-     * Calls retrieveEmployeeProjects to get the Project list.
+     *     Calls retrieveEmployeeProjects to get the Project list.
      * </p>
      *
      * @return List<ProjectDto> value to display Project list.
@@ -40,10 +39,10 @@ public interface ProjectService {
 
     /**
      * <p>
-     * Calls the getProject to fetch the Project and returns the Project.
+     *     Calls the getProject to fetch the Project and returns the Project.
      * </p>
      *
-     * @param projectId  Long value to display the Project.
+     * @param projectId - Long value to display the Project.
      * @return ProjectDto value to display the Project.
      */
     ProjectDto getProject(Long projectId);
@@ -52,18 +51,28 @@ public interface ProjectService {
      * <p>
      *     Removes the Project from user view by changing boolean value.
      * </p>
-     * @param projectId to remove Project.
+     * @param projectId - Long to remove Project.
      * @return ProjectDto value to acknowledge.
      */
     ProjectDto deleteProject(Long projectId);
 
     /**
      * <p>
-     * Returns employee record under the specific project.
+     *     Updates the given project with the new name.
      * </p>
      *
-     * @param projectId int value to get the project.
-     * @return List<DisplayEmployeeDto> value to list the employee.
+     * @param projectDto - {@link ProjectDto} value to update project.
+     * @return ProjectDto for acknowledgement.
+     */
+    ProjectDto updateProject(ProjectDto projectDto);
+
+    /**
+     * <p>
+     *     Returns employee record under the specific project.
+     * </p>
+     *
+     * @param projectId - Long value to get the project.
+     * @return List<> {@link DisplayEmployeeDto} value to list the employee.
      */
     List<DisplayEmployeeDto> getEmployeesOfProjects(Long projectId);
 }
