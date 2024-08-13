@@ -1,8 +1,9 @@
 package com.ideas2it.ems.service;
 
-import java.time.LocalDate;
+import java.sql.SQLOutput;
 import java.util.List;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,12 +38,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public DisplayEmployeeDto addEmployee(EmployeeCreationDto employeeDto) {
-        AccountTransactionDto accountDto = new AccountTransactionDto(employeeDto.getAccountName(),
-                                                                       employeeDto.getIfscCode());
-        SalaryAccount account = AccountMapper.covertDtoToAccount(accountDto);
+        SalaryAccount account = new SalaryAccount(employeeDto.getAccountName(),
+                                                    employeeDto.getIfscCode());
         Employee employee = EmployeeMapper.convertToEmployee(employeeDto);
         employee.setSalaryAccount(account);
         Employee resultEmployee = employeeRepository.save(employee);
+        System.out.println(resultEmployee);
         return EmployeeMapper.convertToDisplayableDto(resultEmployee);
     }
 
@@ -69,8 +70,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public DisplayEmployeeDto updateEmployee(EmployeeUpdationDto employeeDto) {
         Employee employee = EmployeeMapper.convertUpdatableDtoToEmployee(employeeDto);
         employee.setEmployeeName(employeeDto.getName());
-        LocalDate dateOfBith = LocalDate.parse(employeeDto.getDateOfBirth());
-        employee.setEmployeeDob(dateOfBith);
+        employee.setEmployeeDob(employeeDto.getDateOfBirth());
         employee.setContactNumber(employeeDto.getContact_number());
         SalaryAccount salaryAccount = new SalaryAccount(employeeDto.getAccountName(),employeeDto.getIfscCode());
         employee.setSalaryAccount(salaryAccount);

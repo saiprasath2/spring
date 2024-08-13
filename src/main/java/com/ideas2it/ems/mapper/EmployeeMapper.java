@@ -1,7 +1,5 @@
 package com.ideas2it.ems.mapper;
 
-import java.time.LocalDate;
-
 import com.ideas2it.ems.dto.DisplayEmployeeDto;
 import com.ideas2it.ems.dto.EmployeeCreationDto;
 import com.ideas2it.ems.dto.EmployeeUpdationDto;
@@ -51,8 +49,7 @@ public class EmployeeMapper {
         Employee employee = new Employee();
         employee.setEmployeeId(employeeDto.getId());
         employee.setEmployeeName(employeeDto.getName());
-        LocalDate dateOfBith = LocalDate.parse(employeeDto.getDateOfBirth());
-        employee.setEmployeeDob(dateOfBith);
+        employee.setEmployeeDob(employeeDto.getDateOfBirth());
         employee.setContactNumber(employeeDto.getContact_number());
         SalaryAccount salaryAccount = new SalaryAccount(employeeDto.getAccountName(),employeeDto.getIfscCode());
         employee.setSalaryAccount(salaryAccount);
@@ -71,11 +68,8 @@ public class EmployeeMapper {
     public static Employee convertToEmployee(EmployeeCreationDto employeeDto) {
         Employee employee = new Employee();
         employee.setEmployeeName(employeeDto.getName());
-        LocalDate dateOfBith = LocalDate.parse(employeeDto.getDateOfBirth());
-        employee.setEmployeeDob(dateOfBith);
+        employee.setEmployeeDob(employeeDto.getDateOfBirth());
         employee.setContactNumber(employeeDto.getContact_number());
-        SalaryAccount salaryAccount = new SalaryAccount(employeeDto.getAccountName(),employeeDto.getIfscCode());
-        employee.setSalaryAccount(salaryAccount);
         Department department = new Department(employeeDto.getDepartmentId());
         employee.setDepartment(department);
         return employee;

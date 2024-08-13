@@ -39,7 +39,7 @@ public class DepartmentController {
 
     /**
      * <p>
-     * Passes the values received from user, to create a new Department.
+     *    Passes the values received from user, to create a new Department.
      * </p>
      * @param departmentDto - {@link CreationDepartmentDto} value to create the department.
      * @return TransactionDto for user acknowledgment and response.
