@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
  * </p>
  *
  * @author   Saiprasath
- * @version  1.4
+ * @version  1.5
  */
 @Service
 public interface ProjectService {
@@ -26,7 +26,7 @@ public interface ProjectService {
      * @param projectDto - {@link ProjectDto} value to set Project Name.
      * @return ProjectDto value to indicate insertion status.
      */
-    ProjectDto addOrUpdateProject(ProjectDto projectDto);
+    ProjectDto addProject(ProjectDto projectDto);
 
     /**
      * <p>

@@ -1,18 +1,18 @@
 package com.ideas2it.ems.service;
 
-import java.sql.SQLOutput;
 import java.util.List;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ideas2it.ems.dto.AccountTransactionDto;
 import com.ideas2it.ems.dto.DisplayEmployeeDto;
 import com.ideas2it.ems.dto.EmployeeCreationDto;
 import com.ideas2it.ems.dto.EmployeeUpdationDto;
 import com.ideas2it.ems.dto.ProjectDto;
-import com.ideas2it.ems.mapper.AccountMapper;
+import com.ideas2it.ems.exception.EntityAlreadyExistsException;
+import com.ideas2it.ems.exception.EntityNotFoundException;
 import com.ideas2it.ems.mapper.ProjectMapper;
 import com.ideas2it.ems.mapper.EmployeeMapper;
 import com.ideas2it.ems.model.Department;
@@ -35,15 +35,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Autowired
     EmployeeRepository employeeRepository;
+    @Autowired
+    ProjectService projectService;
+    private static final Logger logger = LogManager.getLogger();
 
     @Override
     public DisplayEmployeeDto addEmployee(EmployeeCreationDto employeeDto) {
-        SalaryAccount account = new SalaryAccount(employeeDto.getAccountName(),
-                                                    employeeDto.getIfscCode());
         Employee employee = EmployeeMapper.convertToEmployee(employeeDto);
-        employee.setSalaryAccount(account);
         Employee resultEmployee = employeeRepository.save(employee);
-        System.out.println(resultEmployee);
+        System.out.println("uytghjkhg"+resultEmployee.getAllProjects());
+
         return EmployeeMapper.convertToDisplayableDto(resultEmployee);
     }
 
@@ -55,37 +56,79 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public DisplayEmployeeDto getEmployee(Long employeeId) {
-        return EmployeeMapper.convertToDisplayableDto(employeeRepository
-                                                      .findByEmployeeIdAndIsRemoved(employeeId, false));
+        Employee employee = employeeRepository
+                            .findByEmployeeIdAndIsRemoved(employeeId, false);
+        if(employee == null) {
+            logger.warn("Employee with Id : {}not found.", employeeId);
+            throw new EntityNotFoundException("Employee with Id : " + employeeId + "not found.");
+        }
+        return EmployeeMapper.convertToDisplayableDto(employee);
     }
 
     @Override
     public DisplayEmployeeDto deleteEmployee(Long employeeId) {
-        Employee Employee = employeeRepository.findByEmployeeIdAndIsRemoved(employeeId, false);
-        Employee.setIsRemoved(true);
-        return EmployeeMapper.convertToDisplayableDto(employeeRepository.save(Employee));
+        Employee employee = employeeRepository.findByEmployeeIdAndIsRemoved(employeeId, false);
+        if (null == employee) {
+            logger.warn("Employee with Id : {}not found to delete.", employeeId);
+            throw new EntityNotFoundException("Employee with Id : " + employeeId + "not found.");
+        } else {
+            employee.setIsRemoved(true);
+            return EmployeeMapper.convertToDisplayableDto(employeeRepository.save(employee));
+        }
     }
 
     @Override
     public DisplayEmployeeDto updateEmployee(EmployeeUpdationDto employeeDto) {
-        Employee employee = EmployeeMapper.convertUpdatableDtoToEmployee(employeeDto);
-        employee.setEmployeeName(employeeDto.getName());
-        employee.setEmployeeDob(employeeDto.getDateOfBirth());
-        employee.setContactNumber(employeeDto.getContact_number());
-        SalaryAccount salaryAccount = new SalaryAccount(employeeDto.getAccountName(),employeeDto.getIfscCode());
-        employee.setSalaryAccount(salaryAccount);
-        Department department = new Department(employeeDto.getDepartmentId());
-        employee.setDepartment(department);
-        Employee resultEmployee = employeeRepository.save(employee);
-        return EmployeeMapper.convertToDisplayableDto(resultEmployee);
+        Employee employee = employeeRepository.findByEmployeeIdAndIsRemoved(employeeDto.getId(), false);
+        if (null == employee) {
+            logger.warn("Employee with Id : {}not found to update.", employeeDto.getId());
+            throw new EntityNotFoundException("Employee with Id : " +  employeeDto.getId() + " not found.");
+        } else {
+            employee.setEmployeeId(employeeDto.getId());
+            employee.setEmployeeName(employeeDto.getName());
+            employee.setEmployeeDob(employeeDto.getDateOfBirth());
+            employee.setContactNumber(employeeDto.getContact_number());
+            employee.getSalaryAccount().setAccountName(employeeDto.getAccountName());
+            employee.getSalaryAccount().setIfscCode(employeeDto.getIfscCode());
+            Department department = new Department(employeeDto.getDepartmentId());
+            employee.setDepartment(department);
+            Employee resultEmployee = employeeRepository.save(employee);
+            return EmployeeMapper.convertToDisplayableDto(resultEmployee);
+        }
     }
 
     @Override
-    public DisplayEmployeeDto assignProjectToEmployee(Long employeeId, ProjectDto projectDto) {
+    public DisplayEmployeeDto assignProjectToEmployee(Long employeeId, Long projectId) {
         Employee employee = employeeRepository.findByEmployeeIdAndIsRemoved(employeeId, false);
-        Project project = ProjectMapper.convertToEntity(projectDto);
-        employee.getProject().add(project);
-        Employee resultEmployee = employeeRepository.save(employee);
-        return EmployeeMapper.convertToDisplayableDto(resultEmployee);
+        boolean isAssigned = false;
+        if (null == employee) {
+            logger.warn("Employee with Id : {}not found to assign", employeeId);
+            throw new EntityNotFoundException("Employee with Id : " +  employeeId + " not found.");
+        } else {
+            ProjectDto projectDto = projectService.getProject(projectId);
+            if (projectDto != null) {
+                List<DisplayEmployeeDto> employeeDtoRecord = projectService.getEmployeesOfProjects(projectId);
+                for (DisplayEmployeeDto employees : employeeDtoRecord) {
+                    if (employees.getId() == employeeId) {
+                        isAssigned = true;
+                        break;
+                    }
+                }
+                if (isAssigned) {
+                    logger.warn("Enter valid input. "
+                            + "Employee already assigned"
+                            + " with this project.");
+                    throw new EntityAlreadyExistsException("Employee with Id : " +  employee.getEmployeeId() + " already Assigned.");
+                } else {
+                    Project project = ProjectMapper.convertToEntity(projectService.getProject(projectId));
+                    employee.getProject().add(project);
+                    Employee resultEmployee = employeeRepository.save(employee);
+                    return EmployeeMapper.convertToDisplayableDto(resultEmployee);
+                }
+            } else {
+                logger.warn("No project with Id :{}", projectId);
+                throw new EntityNotFoundException("Project with Id : " +  projectId + " not found.");
+            }
+        }
     }
 }

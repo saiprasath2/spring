@@ -151,7 +151,7 @@ public class Employee {
     }
 
     public SalaryAccount getSalaryAccount() {
-        return salaryAccount;g
+        return salaryAccount;
     }
 
     public void setSalaryAccount(SalaryAccount salaryAccount) {

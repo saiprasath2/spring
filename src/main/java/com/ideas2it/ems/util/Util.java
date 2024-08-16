@@ -6,7 +6,7 @@ import java.time.Period;
 /**
  * <p>
  * Contains the validation methods for the inputs and calculating age.
- * e.g. name,phone number.
+ * e.g. age.
  * </p>
  *
  * @author Saiprasath

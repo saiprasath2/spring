@@ -1,14 +1,15 @@
 package com.ideas2it.ems.dto;
 
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.NotBlank;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.Setter;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.NotBlank;
 
 import java.time.LocalDate;
 
@@ -28,15 +29,15 @@ import java.time.LocalDate;
 public class EmployeeCreationDto {
     @NotBlank
     @Size(min = 3, max = 20, message = "Name should contain 3 to 20 letters.")
-    @Pattern(regexp = "^[a-zA-Z]$")
+    @Pattern(regexp = "^[a-zA-Z]+([ ][a-zA-Z]+)*$", message = "Name should contain only letters.")
     private String Name;
 
     @NotBlank
     @Size(min = 10, max = 10, message = "Number should contain 10 digits.")
-    @Pattern(regexp = "^[1-9]{1}[0-9]{9}$")
+    @Pattern(regexp = "^[1-9]{1}[0-9]{9}$", message = "Contact Number should contain only numbers.")
     private String contact_number;
 
-    @NotBlank
+    @NonNull
     @Past(message = "Give the DOB in past.")
     private LocalDate dateOfBirth;
 
@@ -48,6 +49,6 @@ public class EmployeeCreationDto {
     @Size(min = 7, max = 10)
     private String ifscCode;
 
-    @NotBlank
+    @NonNull
     private Long departmentId;
 }

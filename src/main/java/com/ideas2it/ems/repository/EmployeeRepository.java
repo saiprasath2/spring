@@ -19,7 +19,25 @@ import com.ideas2it.ems.model.Employee;
  */
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
+
+    /**
+     * <p>
+     *     Fetches the employee record by checking their deletion
+     *     status using boolean value.
+     * </p>
+     *
+     * @return List<Employee> for displaying available employees.
+     */
     List<Employee> findByIsRemovedFalse();
 
+    /**
+     * <p>
+     *     Fetches the employee by checking their deletion status
+     *     using boolean value.
+     * </p>
+     * @param id - Long value to fetch the employee.
+     * @param isDeleted - boolean value to check deletion status.
+     * @return Employee to display the employee.
+     */
     Employee findByEmployeeIdAndIsRemoved(Long id, boolean isDeleted);
 }

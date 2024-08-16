@@ -2,6 +2,8 @@ package com.ideas2it.ems.controller;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.http.ResponseEntity;
@@ -11,9 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import com.ideas2it.ems.dto.DisplayEmployeeDto;
 import com.ideas2it.ems.dto.EmployeeCreationDto;
 import com.ideas2it.ems.dto.EmployeeUpdationDto;
-import com.ideas2it.ems.dto.ProjectDto;
 import com.ideas2it.ems.service.EmployeeService;
-import com.ideas2it.ems.service.ProjectService;
 
 /**
  * <p>
@@ -28,20 +28,16 @@ import com.ideas2it.ems.service.ProjectService;
 @RequestMapping("/api/v1/employees")
 public class EmployeeController {
     private final EmployeeService employeeService;
-    private final ProjectService projectService;
     private static final Logger logger = LogManager.getLogger();
 
     /**
      *  <p>
      *     Creates object for service layer inside controller.
      * </p>
-     * @param projectService - {@link EmployeeService} value to create object.
-     * @param employeeService - {@link ProjectService} value to create object.
+     * @param employeeService - {@link EmployeeService} value to create object.
      */
-    public EmployeeController(EmployeeService employeeService,
-                              ProjectService projectService) {
+    public EmployeeController(EmployeeService employeeService) {
         this.employeeService = employeeService;
-        this.projectService = projectService;
     }
 
     /**
@@ -52,7 +48,7 @@ public class EmployeeController {
      * @return dto for user acknowledgment and response.
      */
     @PostMapping
-    public ResponseEntity<DisplayEmployeeDto> createEmployee(@RequestBody EmployeeCreationDto employeeDto) {
+    public ResponseEntity<DisplayEmployeeDto> createEmployee(@Valid @RequestBody EmployeeCreationDto employeeDto) {
         DisplayEmployeeDto resultEmployee = employeeService.addEmployee(employeeDto);
         logger.info("{} Employee created successfully", resultEmployee.getId());
         return new ResponseEntity<>(resultEmployee, HttpStatus.CREATED);
@@ -69,10 +65,6 @@ public class EmployeeController {
     @GetMapping("/{id}")
     public ResponseEntity<DisplayEmployeeDto> getEmployee(@PathVariable(name = "id") Long employeeId) {
         DisplayEmployeeDto employeeDto = employeeService.getEmployee(employeeId);
-        if (null == employeeDto) {
-            logger.warn("Employee with Id : {}not found.", employeeId);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
         return new ResponseEntity<>(employeeDto, HttpStatus.OK);
     }
 
@@ -98,15 +90,10 @@ public class EmployeeController {
      * @return DisplayEmployeeDto for user acknowledgement and response.
      */
     @PutMapping()
-    public ResponseEntity<DisplayEmployeeDto> updateEmployee(@RequestBody EmployeeUpdationDto employeeDto) {
+    public ResponseEntity<DisplayEmployeeDto> updateEmployee(@Valid @RequestBody EmployeeUpdationDto employeeDto) {
         DisplayEmployeeDto resultDto = employeeService.updateEmployee(employeeDto);
-        if (null == resultDto) {
-            logger.warn("Employee with Id : {}not found to find.", employeeDto.getId());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            logger.info("{} created successfully.", resultDto.getName());
-            return new ResponseEntity<>(resultDto, HttpStatus.ACCEPTED);
-        }
+        logger.info("{} created successfully.", resultDto.getName());
+        return new ResponseEntity<>(resultDto, HttpStatus.ACCEPTED);
     }
 
     /**
@@ -117,17 +104,11 @@ public class EmployeeController {
      * @param employeeId - Long value to remove Employee.
      * @return DisplayEmployeeDto value to acknowledge.
      */
-    @PutMapping("{id}")
+    @DeleteMapping("{id}")
     public ResponseEntity<Void> deleteEmployee(@PathVariable(name = "id") Long employeeId) {
-        DisplayEmployeeDto employeeDto = employeeService.getEmployee(employeeId);
-        if (null == employeeDto) {
-            logger.warn("Employee with Id : {}not found to delete.", employeeId);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            DisplayEmployeeDto resultDto = employeeService.deleteEmployee(employeeId);
-            logger.info("{} deleted successfully", resultDto.getName());
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
+        DisplayEmployeeDto resultDto = employeeService.deleteEmployee(employeeId);
+        logger.info("{} deleted successfully", resultDto.getName());
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**
@@ -141,35 +122,8 @@ public class EmployeeController {
     @PutMapping("/{id}/assign/{projectid}")
     public ResponseEntity<DisplayEmployeeDto> assignProject(@PathVariable(name = "id") Long employeeId,
                                                                 @PathVariable(name = "projectid") Long projectId) {
-        DisplayEmployeeDto employeeDto = employeeService.getEmployee(employeeId);
-        boolean isAssigned = false;
-        if (null == employeeDto) {
-            logger.warn("Employee with Id : {}not found to assign", employeeId);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            ProjectDto projectDto = projectService.getProject(projectId);
-            if (projectDto != null) {
-                List<DisplayEmployeeDto> employeeDtoRecord = projectService.getEmployeesOfProjects(projectId);
-                for (DisplayEmployeeDto employees : employeeDtoRecord) {
-                    if (employees.getId() == employeeId) {
-                        isAssigned = true;
-                        break;
-                    }
-                }
-                if (isAssigned) {
-                    logger.warn("Enter valid input. "
-                                + "Employee already assigned"
-                                + " with this project.");
-                    return new ResponseEntity<>(HttpStatus.CONFLICT);
-                } else {
-                    DisplayEmployeeDto resultDto = employeeService.assignProjectToEmployee(employeeId, projectDto);
-                    logger.info("Id : {} Assigned Successfully!", employeeId);
-                    return new ResponseEntity<>(resultDto, HttpStatus.ACCEPTED);
-                }
-            } else {
-                logger.info("No project with Id :{}", projectId);
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-        }
+        DisplayEmployeeDto resultDto = employeeService.assignProjectToEmployee(employeeId, projectId);
+        logger.info("Id : {} Assigned Successfully!", employeeId);
+        return new ResponseEntity<>(resultDto, HttpStatus.ACCEPTED);
     }
 }

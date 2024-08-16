@@ -39,31 +39,10 @@ public class EmployeeMapper {
 
     /**
      * <p>
-     *     Converts Updation format of dto into Entity
-     *     for internal updation.
-     * </p>
-     * @param employeeDto {@link EmployeeUpdationDto} to convert the dto.
-     * @return Employee to update.
-     */
-    public static Employee convertUpdatableDtoToEmployee(EmployeeUpdationDto employeeDto) {
-        Employee employee = new Employee();
-        employee.setEmployeeId(employeeDto.getId());
-        employee.setEmployeeName(employeeDto.getName());
-        employee.setEmployeeDob(employeeDto.getDateOfBirth());
-        employee.setContactNumber(employeeDto.getContact_number());
-        SalaryAccount salaryAccount = new SalaryAccount(employeeDto.getAccountName(),employeeDto.getIfscCode());
-        employee.setSalaryAccount(salaryAccount);
-        Department department = new Department(employeeDto.getDepartmentId());
-        employee.setDepartment(department);
-        return employee;
-    }
-
-    /**
-     * <p>
      *     Converts input dto to entity for creating employee.
      * </p>
      * @param employeeDto {@link EmployeeCreationDto} to convert into entity.
-     * @return
+     * @return Employee to for internal usage.
      */
     public static Employee convertToEmployee(EmployeeCreationDto employeeDto) {
         Employee employee = new Employee();
@@ -71,6 +50,8 @@ public class EmployeeMapper {
         employee.setEmployeeDob(employeeDto.getDateOfBirth());
         employee.setContactNumber(employeeDto.getContact_number());
         Department department = new Department(employeeDto.getDepartmentId());
+        SalaryAccount salaryAccount = new SalaryAccount(employeeDto.getAccountName(), employeeDto.getIfscCode());
+        employee.setSalaryAccount(salaryAccount);
         employee.setDepartment(department);
         return employee;
     }

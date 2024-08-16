@@ -70,9 +70,9 @@ public interface EmployeeService {
      * <p>
      *     Assigns given project to the employee.
      * </p>
-     * @param projectDto- {@link ProjectDto} to assign it to the employee.
-     * @param employeeId - Long to assign employee with a project.
+     * @param projectId- Long value to assign it to the employee.
+     * @param employeeId - Long value to assign employee with a project.
      * @return DisplayEmployeeDto for assigning acknowledgement.
      */
-    DisplayEmployeeDto assignProjectToEmployee(Long employeeId, ProjectDto projectDto);
+    DisplayEmployeeDto assignProjectToEmployee(Long employeeId, Long projectId);
 }

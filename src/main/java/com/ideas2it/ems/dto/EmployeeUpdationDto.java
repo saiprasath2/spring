@@ -34,8 +34,8 @@ public class EmployeeUpdationDto {
 
     @NotBlank
     @Size(min = 3, max = 20, message = "Name should contain 3 to 20 letters.")
-    @Pattern(regexp = "^[a-zA-Z]$")
-    private String Name;
+    @Pattern(regexp = "^[a-zA-Z]+([ ][a-zA-Z]+)*$", message = "Name should contain only letters.")
+    private String name;
 
     @NotBlank
     @Size(min = 10, max = 10, message = "Number should contain 10 digits.")

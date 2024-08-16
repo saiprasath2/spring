@@ -4,13 +4,12 @@ import java.util.List;
 
 import com.ideas2it.ems.dto.DisplayEmployeeDto;
 import com.ideas2it.ems.dto.ProjectDto;
-import com.ideas2it.ems.mapper.ProjectMapper;
 import com.ideas2it.ems.service.ProjectService;
-import com.ideas2it.ems.model.Project;
 
-import org.springframework.http.HttpStatus;
+import jakarta.validation.Valid;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,8 +46,8 @@ public class ProjectController {
      * @return ProjectDto for user acknowledgment and response.
      */
     @PostMapping
-    public ResponseEntity<ProjectDto> createProject(@RequestBody ProjectDto projectDto) {
-        ProjectDto resultDto = projectService.addOrUpdateProject(projectDto);
+    public ResponseEntity<ProjectDto> createProject(@Valid @RequestBody ProjectDto projectDto) {
+        ProjectDto resultDto = projectService.addProject(projectDto);
         logger.info("{} Project created successfully", resultDto.getName());
         return new ResponseEntity<>(resultDto, HttpStatus.CREATED);
     }
@@ -64,10 +63,6 @@ public class ProjectController {
     @GetMapping("{id}")
     public ResponseEntity<ProjectDto> getProject(@PathVariable(name = "id") Long projectId) {
         ProjectDto projectDto = projectService.getProject(projectId);
-        if (null == projectDto) {
-            logger.warn("Project with Id : " + projectId + "not found.");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
         return new ResponseEntity<>(projectDto, HttpStatus.OK);
     }
 
@@ -92,13 +87,9 @@ public class ProjectController {
      * @return ProjectDto for user acknowledgement and response.
      */
     @PutMapping
-    public ResponseEntity<ProjectDto> updateProject(@RequestBody ProjectDto projectDto ) {
+    public ResponseEntity<ProjectDto> updateProject(@Valid @RequestBody ProjectDto projectDto ) {
         ProjectDto resultDto = projectService.updateProject(projectDto);
-        if (null == resultDto) {
-            logger.warn("Project with Id : " + projectDto.getId() + "not found.");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        logger.info(resultDto.getName() + " created successfully.");
+        logger.info("{} created successfully.", resultDto.getName());
         return new ResponseEntity<>(resultDto, HttpStatus.ACCEPTED);
     }
     /**
@@ -111,11 +102,6 @@ public class ProjectController {
      */
     @PutMapping("/delete/{id}")
     public ResponseEntity<ProjectDto> deleteProject(@PathVariable(name = "id") Long projectId) {
-        ProjectDto ProjectDto = projectService.getProject(projectId);
-        if (null == ProjectDto) {
-            logger.warn("Project with Id : " + projectId + "not found.");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
         ProjectDto resultDto = projectService.deleteProject(projectId);
         logger.info("{} deleted successfully", resultDto.getName());
         return new ResponseEntity<>(resultDto, HttpStatus.ACCEPTED);

@@ -2,6 +2,8 @@ package com.ideas2it.ems.controller;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.http.HttpStatus;
@@ -45,7 +47,7 @@ public class DepartmentController {
      * @return TransactionDto for user acknowledgment and response.
      */
     @PostMapping
-    public ResponseEntity<TransactionDepartmentDto> createDepartment(@RequestBody CreationDepartmentDto departmentDto) {
+    public ResponseEntity<TransactionDepartmentDto> createDepartment(@Valid @RequestBody CreationDepartmentDto departmentDto) {
         TransactionDepartmentDto resultDto = departmentService.addDepartment(departmentDto);
         logger.info("{} department created successfully", resultDto.getName());
         return new ResponseEntity<>(resultDto, HttpStatus.CREATED);
@@ -57,15 +59,11 @@ public class DepartmentController {
      * </p>
      *
      * @param departmentId - to fetch the department.
-     * @return TrancsactionDepartmentDto required department and response to user.
+     * @return TransactionDepartmentDto required department and response to user.
      */
     @GetMapping("/{id}")
     public ResponseEntity<TransactionDepartmentDto> getDepartment(@PathVariable(name = "id") Long departmentId) {
         TransactionDepartmentDto departmentDto = departmentService.getDepartment(departmentId);
-        if (null == departmentDto) {
-            logger.warn("Department with Id : {}not found.", departmentId);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
         return new ResponseEntity<>(departmentDto, HttpStatus.OK);
     }
 
@@ -90,12 +88,8 @@ public class DepartmentController {
      * @return TransactionDepartmentDto for user acknowledgement and response.
      */
     @PutMapping
-    public ResponseEntity<TransactionDepartmentDto> updateDepartment(@RequestBody TransactionDepartmentDto departmentDto) {
+    public ResponseEntity<TransactionDepartmentDto> updateDepartment(@Valid @RequestBody TransactionDepartmentDto departmentDto) {
         TransactionDepartmentDto resultDto = departmentService.updateDepartment(departmentDto);
-        if (null == resultDto) {
-            logger.warn("Department with Id : {} not found to update.", departmentDto.getId());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
         logger.info("{} updated successfully.", resultDto.getName());
         return new ResponseEntity<>(resultDto, HttpStatus.ACCEPTED);
     }
@@ -110,13 +104,8 @@ public class DepartmentController {
      */
     @PutMapping("/delete/{id}")
     public ResponseEntity<Void> deleteDepartment(@PathVariable(name = "id") Long departmentId) {
-        TransactionDepartmentDto departmentDto = departmentService.getDepartment(departmentId);
-        if (null == departmentDto) {
-            logger.warn("Department with Id : {}not found to delete.", departmentId);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
         departmentService.deleteDepartment(departmentId);
-        logger.info(departmentDto.getName() + " deleted successfully");
+        logger.info("Department with Id : {} deleted successfully", departmentId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
