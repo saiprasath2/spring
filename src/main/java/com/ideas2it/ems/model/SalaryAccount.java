@@ -1,6 +1,8 @@
 package com.ideas2it.ems.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 
 /**
  * <p> Represents blueprint for the salary account datatype.
@@ -13,6 +15,8 @@ import jakarta.persistence.*;
  */
 @Entity
 @Table(name = "salary_account")
+@Builder
+@AllArgsConstructor
 public class SalaryAccount {
 
     @Id

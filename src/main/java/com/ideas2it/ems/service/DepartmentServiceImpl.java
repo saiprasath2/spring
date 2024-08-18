@@ -79,12 +79,13 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public TransactionDepartmentDto updateDepartment(TransactionDepartmentDto departmentDto) {
-        Department department = DepartmentMapper.convertTransactionToEntity(departmentDto);
-        if (null == getDepartment(department.getDepartmentId())) {
+        Department department = departmentRepository.findByDepartmentIdAndIsRemoved(departmentDto.getId(), false);
+        if (null == department) {
             logger.warn("Department with Id : {} not found to update.", departmentDto.getId());
             throw new EntityNotFoundException("Department with Id : " + departmentDto.getId() + "not found.");
         }
         department.setDepartmentName(departmentDto.getName());
+        department = departmentRepository.save(department);
         return DepartmentMapper.convertToTransactionDto(department);
     }
 

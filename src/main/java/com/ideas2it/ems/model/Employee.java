@@ -1,6 +1,8 @@
 package com.ideas2it.ems.model;
 
-import com.ideas2it.ems.util.Util;
+import java.time.LocalDate;
+import java.util.Set;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,12 +19,12 @@ import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-import java.time.Period;
-import java.util.Set;
+import com.ideas2it.ems.util.Util;
 
 /**
  * <p> Represents blueprint for the Employee datatype.
@@ -35,6 +37,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "employees")
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Employee {

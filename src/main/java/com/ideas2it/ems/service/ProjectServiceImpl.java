@@ -75,8 +75,8 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectDto updateProject(ProjectDto projectDto) {
-        Project project = ProjectMapper.convertToEntity(projectDto);
-        if (null == getProject(project.getProjectId())) {
+        Project project = projectRepository.findByProjectIdAndIsRemoved(projectDto.getId(), false);
+        if (null == project) {
             logger.warn("Project with Id : {}not found to update.", projectDto.getId());
             throw new EntityNotFoundException("Project with Id : " + projectDto.getId() + "not found.");
         }
@@ -88,6 +88,10 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public List<DisplayEmployeeDto> getEmployeesOfProjects(Long projectId) {
         Project project = projectRepository.findByProjectIdAndIsRemoved(projectId, false);
+        if (null == project) {
+            logger.warn("Project with Id : {} not found to fetch.", projectId);
+            throw new EntityNotFoundException("Project with Id : " + projectId + "not found.");
+        }
         return project.getEmployees().stream()
                         .map(EmployeeMapper::convertToDisplayableDto).toList();
     }

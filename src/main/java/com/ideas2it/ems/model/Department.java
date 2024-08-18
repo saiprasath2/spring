@@ -11,6 +11,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 
 import java.util.Set;
 
@@ -27,6 +28,7 @@ import java.util.Set;
 @Entity
 @Table(name = "departments")
 @AllArgsConstructor
+@Builder
 public class Department {
     
     @Id
