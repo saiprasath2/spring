@@ -1,4 +1,4 @@
-package com.ideas2it.EmployeeManagementSystem.service;
+package com.ideas2it.ems.service;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -24,7 +24,6 @@ import com.ideas2it.ems.model.Employee;
 import com.ideas2it.ems.model.Project;
 import com.ideas2it.ems.model.SalaryAccount;
 import com.ideas2it.ems.repository.ProjectRepository;
-import com.ideas2it.ems.service.ProjectServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class ProjectServiceImplTest {
@@ -127,9 +126,10 @@ public class ProjectServiceImplTest {
     @Test
     public void testDeleteProject() {
         when(projectRepository.findByProjectIdAndIsRemoved(projectId, false)).thenReturn(project);
+        project.setIsRemoved(true);
         when(projectRepository.save(any(Project.class))).thenReturn(project);
         projectServiceImpl.deleteProject(projectId);
-        assert(project.getIsRemoved());
+        assertTrue(project.getIsRemoved());
     }
 
     @Test

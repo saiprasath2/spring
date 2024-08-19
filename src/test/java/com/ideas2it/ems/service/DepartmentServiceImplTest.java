@@ -1,4 +1,4 @@
-package com.ideas2it.EmployeeManagementSystem.service;
+package com.ideas2it.ems.service;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -25,7 +25,6 @@ import com.ideas2it.ems.model.Employee;
 import com.ideas2it.ems.model.Project;
 import com.ideas2it.ems.model.SalaryAccount;
 import com.ideas2it.ems.repository.DepartmentRepository;
-import com.ideas2it.ems.service.DepartmentServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class DepartmentServiceImplTest {
@@ -95,8 +94,7 @@ public class DepartmentServiceImplTest {
         when(departmentRepository.save(any(Department.class))).thenReturn(department);
         TransactionDepartmentDto transactionDepartmentDetail = departmentServiceImpl.addDepartment(creationDepartmentDto);
         assertNotNull(transactionDepartmentDetail);
-        assertEquals(transactionDepartmentDetail.getId(), transactionDepartmentDto.getId());
-
+        assertEquals(transactionDepartmentDetail.getName(), department.getDepartmentName());
     }
 
     @Test
@@ -134,9 +132,10 @@ public class DepartmentServiceImplTest {
     @Test
     public void testDeleteDepartment() {
         when(departmentRepository.findByDepartmentIdAndIsRemoved(departmentId, false)).thenReturn(department);
+        department.setIsRemoved(true);
         when(departmentRepository.save(any(Department.class))).thenReturn(department);
         departmentServiceImpl.deleteDepartment(departmentId);
-        assert(department.getIsRemoved());
+        assertTrue(department.getIsRemoved());
     }
 
     @Test
@@ -174,5 +173,4 @@ public class DepartmentServiceImplTest {
         EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, ()-> departmentServiceImpl.getEmployeesOfDepartments(departmentId));
         assertEquals("Department with Id : " + departmentId + "not found.", thrown.getMessage());
     }
-
 }

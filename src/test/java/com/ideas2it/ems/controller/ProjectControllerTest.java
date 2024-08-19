@@ -1,12 +1,10 @@
-package com.ideas2it.EmployeeManagementSystem.controller;
+package com.ideas2it.ems.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -18,7 +16,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.ideas2it.ems.controller.ProjectController;
 import com.ideas2it.ems.dto.DisplayEmployeeDto;
 import com.ideas2it.ems.dto.ProjectDto;
 import com.ideas2it.ems.service.ProjectService;
@@ -27,16 +24,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 
 @WebMvcTest(ProjectController.class)
-class ProjectControllerTest {
+public class ProjectControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @Mock
+    @MockBean
     private ProjectService projectService;
-
-    @InjectMocks
-    private ProjectController projectController;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -44,7 +38,6 @@ class ProjectControllerTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
 
         displayEmployeeDto = DisplayEmployeeDto.builder()
                 .id(1L)
@@ -58,11 +51,9 @@ class ProjectControllerTest {
     }
 
     @Test
-    void testCreateProject() throws Exception {
+    public void testCreateProject() throws Exception {
         ProjectDto projectDto = new ProjectDto(1L, "Project A");
-
         when(projectService.addProject(any(ProjectDto.class))).thenReturn(projectDto);
-
         mockMvc.perform(post("/api/v1/projects")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(projectDto)))
@@ -74,9 +65,7 @@ class ProjectControllerTest {
     @Test
     void testGetProject() throws Exception {
         ProjectDto projectDto = new ProjectDto(1L, "Project A");
-
         when(projectService.getProject(1L)).thenReturn(projectDto);
-
         mockMvc.perform(get("/api/v1/projects/{id}", 1))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
@@ -89,9 +78,7 @@ class ProjectControllerTest {
                 new ProjectDto(1L, "Project A"),
                 new ProjectDto(2L, "Project B")
         );
-
         when(projectService.getProjects()).thenReturn(projects);
-
         mockMvc.perform(get("/api/v1/projects"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
@@ -102,9 +89,7 @@ class ProjectControllerTest {
     @Test
     void testUpdateProject() throws Exception {
         ProjectDto projectDto = new ProjectDto(1L, "Updated Project");
-
         when(projectService.updateProject(any(ProjectDto.class))).thenReturn(projectDto);
-
         mockMvc.perform(put("/api/v1/projects")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(projectDto)))
@@ -125,7 +110,6 @@ class ProjectControllerTest {
 
     @Test
     void testGetEmployeesByProjectId() throws Exception {
-        // Assuming DisplayEmployeeDto has a name field for simplicity
         List<DisplayEmployeeDto> employees = List.of(displayEmployeeDto);
 
         when(projectService.getEmployeesOfProjects(1L)).thenReturn(employees);
